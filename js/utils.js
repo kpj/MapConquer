@@ -20,7 +20,7 @@ function showMap() {
 		gpsPosition["long"],
 		gpsPosition["lat"]
 	).transform(fromProjection, toProjection);
-	var zoom = 15;
+	var zoom = 17;
 
 	map.addLayer(new OpenLayers.Layer.OSM());
 
@@ -35,17 +35,22 @@ function showMap() {
 	map.addLayer(eventLayer);
 
 	// visualize own range
-	interactiveLayer = new OpenLayers.Layer.Vector(
-		"not Zooming",
-		{
-			styleMap: new OpenLayers.StyleMap({
+	var interactiveLayer = new OpenLayers.Layer.Vector(
+		"not Zooming", {
+			"styleMap": new OpenLayers.StyleMap({
 				"default": new OpenLayers.Style({
-					pointRadius: "${radius}",
+					pointRadius: "${getSize}",
 					fillColor: '#ff0000',
 					fillOpacity: 0.0,
 					strokeColor: '#000000',
 					strokeWidth: 2,
 					strokeOpacity: 1.0
+				}, {
+					context: {
+						getSize: function(feature) {
+							return viewrange / feature.layer.map.getResolution();
+						}
+					}  
 				})
 			})
 		}
@@ -53,12 +58,10 @@ function showMap() {
 	map.addLayer(interactiveLayer);
 	interactiveLayer.addFeatures([
 		new OpenLayers.Feature.Vector(
-			new OpenLayers.Geometry.Point(position.lon, position.lat, 2),
-			{
-				"radius": 10
-			}
+			new OpenLayers.Geometry.Point(position.lon, position.lat)
 		)
 	]);
 
 	map.setCenter(position, zoom);
+
 }
