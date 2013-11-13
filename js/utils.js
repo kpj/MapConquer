@@ -1,6 +1,6 @@
-function getLocation() {
+function enableLocationTracking() {
 	if (navigator.geolocation) {
-		navigator.geolocation.getCurrentPosition(handleLocation);
+		navigator.geolocation.watchPosition(handleLocation);
 	} else {
 		console.log("Geolocation is not supported by this browser.");
 	}
@@ -10,23 +10,16 @@ function handleLocation(position) {
 	console.log("Got:" + position.coords.latitude + ":" + position.coords.longitude);
 	gpsPosition = {"lat": position.coords.latitude,"long": position.coords.longitude};
 
-	showMap();
+	updatePosition();
 }
 
-function showMap() {
-	// initialize map
-	var map = new OpenLayers.Map("basicMap");
-	var position = new OpenLayers.LonLat(
-		gpsPosition["long"],
-		gpsPosition["lat"]
-	).transform(fromProjection, toProjection);
-	var zoom = 17;
-
+function initMap() {
+	map = new OpenLayers.Map("basicMap");
 	map.addLayer(new OpenLayers.Layer.OSM());
 
-	// create events
-	var eventLayer = new OpenLayers.Layer.Text(
-		"Events",
+	// layre to hold buildings
+	eventLayer = new OpenLayers.Layer.Text(
+		"buildings",
 		{
 			"location": "data/events.txt",
 			"projection": map.displayProjection
@@ -34,9 +27,9 @@ function showMap() {
 	);
 	map.addLayer(eventLayer);
 
-	// visualize own range
-	var interactiveLayer = new OpenLayers.Layer.Vector(
-		"not Zooming", {
+	// layer to hold elements relative to player
+	relativeLayer = new OpenLayers.Layer.Vector(
+		"not zooming", {
 			"styleMap": new OpenLayers.StyleMap({
 				"default": new OpenLayers.Style({
 					pointRadius: "${getSize}",
@@ -55,13 +48,35 @@ function showMap() {
 			})
 		}
 	);
-	map.addLayer(interactiveLayer);
-	interactiveLayer.addFeatures([
+	map.addLayer(relativeLayer);
+
+	// vision marker
+	relativeLayer.addFeatures([
 		new OpenLayers.Feature.Vector(
-			new OpenLayers.Geometry.Point(position.lon, position.lat)
+			new OpenLayers.Geometry.Point(0, 0),
+			{
+				"id": "viewrange"
+			}
 		)
 	]);
 
-	map.setCenter(position, zoom);
+	// some standard location
+	map.setCenter(new OpenLayers.LonLat(0, 51).transform(fromProjection, toProjection), 16);
+}
 
+function updatePosition() {
+	var position = new OpenLayers.LonLat(
+		gpsPosition["long"],
+		gpsPosition["lat"]
+	).transform(fromProjection, toProjection);
+
+	// visualize own range
+	for(var i in relativeLayer.features) {
+		console.log(relativeLayer.features[i]);
+		if(relativeLayer.features[i].data.id == "viewrange") {
+			relativeLayer.features[i].move(position);
+		}
+	}
+
+	map.setCenter(position);
 }
