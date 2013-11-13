@@ -2,6 +2,10 @@
 
 from bottle import *
 
+@route('/')
+def route_to_index():
+	return static_file('index.html', root='.')
+
 @route('/<filename:path>')
 def send_static(filename):
     return static_file(filename, root='.')
