@@ -2,6 +2,7 @@
 
 from bottle import *
 import atexit
+import os.path
 
 from python import db_handler
 
@@ -28,6 +29,16 @@ def route_to_index():
 		info = db.get_info(player)
 
 	return template('index.html', {'name': info[0], 'xp': info[1], 'faction': info[2]})
+
+@route("/add_event/<lon>/<lat>")
+def add_event(lon, lat):
+	if not os.path.isfile('data/events.txt') or os.path.getsize('data/events.txt') == 0:
+		print "ASIUDGAS"
+		with open('data/events.txt', 'w') as file:
+			file.write('lat\tlon\ttitle\tdescription\ticon\ticonSize\ticonOffset')
+	with open('data/events.txt', 'a') as file:
+		file.write('%s\t%s\tNew Event\tMoop!\tdata/portal.png\t30,30\t-15,-15\n\n' % (lat, lon))
+	return "Event added"
 
 @route('/<filename:path>')
 def send_static(filename):

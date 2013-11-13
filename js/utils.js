@@ -15,7 +15,7 @@ function handleLocation(position) {
 
 function initMap() {
 	map = new OpenLayers.Map("basicMap");
-	map.addLayer(new OpenLayers.Layer.OSM());
+	map.addLayer(new OpenLayers.Layer.OSM(/*"MidnightCommander", "http://c.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/999/256/${z}/${x}/${y}.png"*/));
 
 	// layer to hold buildings
 	eventLayer = new OpenLayers.Layer.Text(
@@ -84,5 +84,5 @@ function updatePosition() {
 }
 
 function placeObject() {
-	console.log("Placing object");
+	window.location = window.location.origin + "/add_event/" + gpsPosition["long"] + "/" + gpsPosition["lat"] + window.location.search
 }

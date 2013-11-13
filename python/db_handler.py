@@ -17,7 +17,8 @@ class DBHandler(object):
 		self.db = sql.connect(self.path)
 
 	def close(self):
-		self.db.close()
+		#self.db.close()
+		pass
 
 	def get_info(self, player):
 		"""Returns None if player does not exist

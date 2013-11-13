@@ -1,3 +1,0 @@
-lat	lon	title	description	icon	iconSize	iconOffset
-53.079	8.8016	Awesome Event	Meep!	data/portal.png	30,30	-15,-15
-
