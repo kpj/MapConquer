@@ -82,3 +82,7 @@ function updatePosition() {
 
 	map.setCenter(position);
 }
+
+function placeObject() {
+	console.log("Placing object");
+}

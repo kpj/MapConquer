@@ -1,11 +1,22 @@
 html, body, #basicMap {
+	position: absolute;
 	width: 100%;
 	height: 100%;
 	margin: 0;
 }
 
-#status {
+#status, #actions {
+	position: absolute;
 	width: 100%;
-	background-color: black;
+	background: url('../data/bar_bg.png');
 	color: white;
+	z-index: 1;
+}
+
+#actions {
+	bottom: 0px;
+}
+
+div.olControlZoom {
+	top: 25px !important;
 }
