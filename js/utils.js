@@ -7,7 +7,7 @@ function enableLocationTracking() {
 }
 
 function handleLocation(position) {
-	console.log("Got:" + position.coords.latitude + ":" + position.coords.longitude);
+	console.log("Got: " + position.coords.latitude + ":" + position.coords.longitude);
 	gpsPosition = {"lat": position.coords.latitude,"long": position.coords.longitude};
 
 	updatePosition();
@@ -75,7 +75,6 @@ function updatePosition() {
 
 	// visualize own range
 	for(var i in relativeLayer.features) {
-		console.log(relativeLayer.features[i]);
 		if(relativeLayer.features[i].data.id == "viewrange") {
 			relativeLayer.features[i].move(position);
 		}
