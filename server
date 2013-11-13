@@ -33,7 +33,6 @@ def route_to_index():
 @route("/add_event/<lon>/<lat>")
 def add_event(lon, lat):
 	if not os.path.isfile('data/events.txt') or os.path.getsize('data/events.txt') == 0:
-		print "ASIUDGAS"
 		with open('data/events.txt', 'w') as file:
 			file.write('lat\tlon\ttitle\tdescription\ticon\ticonSize\ticonOffset')
 	with open('data/events.txt', 'a') as file:
