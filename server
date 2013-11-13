@@ -1,13 +1,37 @@
 #!/usr/bin/env python2
 
 from bottle import *
+import atexit
 
+from python import db_handler
+
+
+# init
+def shutdown():
+	db.close()
+	print "Goodbye!"
+atexit.register(shutdown)
+
+# handle database access
+db = db_handler.DBHandler('data/data.db')
+
+# handle webserver
 @route('/')
 def route_to_index():
-	return static_file('index.html', root='.')
+	player = request.query.player
+	if len(player) == 0:
+		return "Please specify player (?player=<name>)"
+
+	info = db.get_info(player)
+	if info == None:
+		db.create_player(player)
+		info = db.get_info(player)
+	print info
+
+	return template('index.html', {'name': info[0], 'xp': info[1], 'faction': info[2]})
 
 @route('/<filename:path>')
 def send_static(filename):
-    return static_file(filename, root='.')
+	return static_file(filename, root='.')
 
 run(host='localhost', port=8080)
