@@ -26,7 +26,6 @@ def route_to_index():
 	if info == None:
 		db.create_player(player)
 		info = db.get_info(player)
-	print info
 
 	return template('index.html', {'name': info[0], 'xp': info[1], 'faction': info[2]})
 
@@ -34,4 +33,4 @@ def route_to_index():
 def send_static(filename):
 	return static_file(filename, root='.')
 
-run(host='localhost', port=8080)
+run(host='0.0.0.0', port=8080)
