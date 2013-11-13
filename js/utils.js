@@ -17,7 +17,7 @@ function initMap() {
 	map = new OpenLayers.Map("basicMap");
 	map.addLayer(new OpenLayers.Layer.OSM());
 
-	// layre to hold buildings
+	// layer to hold buildings
 	eventLayer = new OpenLayers.Layer.Text(
 		"buildings",
 		{
