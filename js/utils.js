@@ -39,16 +39,19 @@ function showMap() {
 		"not Zooming", {
 			"styleMap": new OpenLayers.StyleMap({
 				"default": new OpenLayers.Style({
-					pointRadius: "${getSize}",
+					pointRadius: "${getPointRadius}",
 					fillColor: '#ff0000',
 					fillOpacity: 0.0,
-					strokeColor: '#000000',
-					strokeWidth: 2,
+					strokeColor: '#00ccff',
+					strokeWidth: "${getStrokeWidth}",
 					strokeOpacity: 1.0
 				}, {
 					context: {
-						getSize: function(feature) {
-							return viewrange / feature.layer.map.getResolution();
+						getPointRadius: function(feature) {
+							return Math.max(1,viewrange / feature.layer.map.getResolution());
+						},
+						getStrokeWidth: function(feature) {
+							return Math.max(1,(viewrange / feature.layer.map.getResolution())/5);
 						}
 					}  
 				})
