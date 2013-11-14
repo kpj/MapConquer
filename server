@@ -36,7 +36,7 @@ def add_event(lon, lat):
 		with open('data/events.txt', 'w') as file:
 			file.write('lat\tlon\ttitle\tdescription\ticon\ticonSize\ticonOffset\n')
 	with open('data/events.txt', 'a') as file:
-		file.write('%s\t%s\tNew Event\tMoop!\tdata/portal.png\t30,30\t-15,-15\n\n' % (lat, lon))
+		file.write('%s\t%s\tNew Event\tMoop!\tdata/portal.png\t30,30\t0,-30\n\n' % (lat, lon))
 	return "Event added"
 
 @route('/<filename:path>')
