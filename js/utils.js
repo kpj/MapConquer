@@ -84,5 +84,5 @@ function updatePosition() {
 }
 
 function placeObject() {
-	window.location = window.location.origin + "/add_event/" + gpsPosition["long"] + "/" + gpsPosition["lat"] + window.location.search
+	window.location += "&action=add_event&lon=" + gpsPosition["long"] + "&lat=" + gpsPosition["lat"]
 }
