@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, user-scalable=no">
+
+		<title>MapConquer - run or lose</title>
+
+		<script src="js/api/OpenLayers.js"></script>
+		<script src="js/api/jquery.js"></script>
+		<script src="js/variables.js"></script>
+		<script src="js/data/events.js"></script>
+		<script src="js/utils.js"></script>
+		<script src="js/core.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="css/layout.css" />
+
+		<script>
+			$(window).load(function() {
+				initMap();
+				enableLocationTracking();
+			});
+		</script>
+	</head>
+	<body>
+		<div id="status">Name: {{name}} XP: {{xp}} Faction: {{faction}}</div>
+		<div id="basicMap"></div>
+		<div id="actions"><input type="button" value="Place!" onClick='javascript:placeObject()'/></div>
+	</body>
+</html>
