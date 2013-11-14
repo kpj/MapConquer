@@ -1,10 +1,8 @@
-#!/usr/bin/env python2
-
 from bottle import *
 import atexit
 import os.path
 
-from python import db_handler
+import db_handler
 
 
 # init
@@ -21,7 +19,7 @@ db = db_handler.DBHandler('data/data.db')
 def route_to_index():
 	player = request.query.player
 	if len(player) == 0:
-		return static_file("login.html", root=".")
+		return static_file("html/login.html", root=".")
 
 	info = db.get_info(player)
 	if info == None:
@@ -44,7 +42,7 @@ def route_to_index():
 			print "Invalid event addition query"
 		return redirect("/?player=%s" % player)
 
-	return template('game.html', {'name': info[0], 'xp': info[1], 'faction': info[2]})
+	return template('html/game.html', {'name': info[0], 'xp': info[1], 'faction': info[2]})
 
 @route('/<filename:path>')
 def send_static(filename):
