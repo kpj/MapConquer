@@ -21,7 +21,7 @@ db = db_handler.DBHandler('data/data.db')
 def route_to_index():
 	player = request.query.player
 	if len(player) == 0:
-		return "Please specify player (?player=<name>)"
+		return static_file("login.html", root=".")
 
 	info = db.get_info(player)
 	if info == None:
@@ -44,7 +44,7 @@ def route_to_index():
 			print "Invalid event addition query"
 		return redirect("/?player=%s" % player)
 
-	return template('index.html', {'name': info[0], 'xp': info[1], 'faction': info[2]})
+	return template('game.html', {'name': info[0], 'xp': info[1], 'faction': info[2]})
 
 @route('/<filename:path>')
 def send_static(filename):

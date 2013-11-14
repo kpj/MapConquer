@@ -5,18 +5,31 @@ html, body, #basicMap {
 	margin: 0;
 }
 
-#status, #actions {
-	position: absolute;
-	width: 100%;
-	background: url('../data/bar_bg.png');
+#status, #actions, #login {
 	color: white;
+	background: url('../data/bar_bg.png');
 	z-index: 1;
+	position: absolute;
 	font-family: "Times New Roman", Times, serif;
 	font-size: medium;
 }
 
+#status, #actions {
+	width: 100%;
+}
+
 #actions {
 	bottom: 0px;
+}
+
+#login {
+	height: 200px;
+	width: 300px;
+	margin: -100px 0 0 -150px;
+	top: 50%;
+	left: 50%;
+	border-radius: 10px;
+	padding: 5px;
 }
 
 div.olControlZoom {

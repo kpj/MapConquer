@@ -1,3 +1,7 @@
+function randInt(min, max) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function enableLocationTracking() {
 	if (navigator.geolocation) {
 		navigator.geolocation.watchPosition(handleLocation);
@@ -64,7 +68,7 @@ function initMap() {
 	]);
 
 	// some standard location
-	map.setCenter(new OpenLayers.LonLat(0, 51).transform(fromProjection, toProjection), 16);
+	map.setCenter(new OpenLayers.LonLat(randInt(0, 180), randInt(0, 90)).transform(fromProjection, toProjection), 14);
 }
 
 function updatePosition() {
@@ -85,4 +89,10 @@ function updatePosition() {
 
 function placeObject() {
 	window.location += "&action=add_event&lon=" + gpsPosition["long"] + "&lat=" + gpsPosition["lat"]
+}
+
+function enableAutoPan() {
+	map.panDuration = panDuration;
+	map.panTo(map.getLonLatFromPixel({x: randInt(2, 5), y: randInt(2, 5)}));
+	setTimeout(enableAutoPan, panDuration*2);
 }
