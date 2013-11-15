@@ -9,4 +9,5 @@ var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical M
 
 var viewrange = 10;
 
-var panDuration = 10000;
+var panDuration = 1000;
+var randPanDir = {x: randInt(-5, 5), y: randInt(-5, 5)};
