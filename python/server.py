@@ -26,7 +26,7 @@ def route_to_index():
 		db.create_player(player)
 		info = db.get_info(player)
 
-	return template('html/game.html', {'name': info[0], 'xp': info[1], 'faction': info[2]})
+	return template('html/game.html', {'name': info['name'], 'xp': info['xp'], 'faction': info['faction']})
 
 @route('/<filename:path>')
 def send_static(filename):
