@@ -84,7 +84,7 @@ function updatePosition() {
 }
 
 function placeObject() {
-	window.location += "&action=add_event&lon=" + gpsPosition["long"] + "&lat=" + gpsPosition["lat"]
+	postData({action: "add_event", lon: gpsPosition["long"], lat: gpsPosition["lat"]});
 }
 
 function enableAutoPan() {
