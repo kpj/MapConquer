@@ -1,0 +1,4 @@
+# needs python-dev
+bottle
+flup
+pymongo

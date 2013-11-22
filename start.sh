@@ -1,1 +1,1 @@
-$(sleep 1; chmod 0666 /home/kpj/sock) & python2 python/server.py
+$(sleep 1; chmod 0666 /home/kpj/sock) & ./mapconquer.env/bin/python python/server.py

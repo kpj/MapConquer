@@ -2,3 +2,5 @@ data/data.db
 data/events.txt
 
 *.pyc
+
+mapconquer.env
