@@ -66,7 +66,7 @@ function initMap() {
 	map.addLayer(eventLayer);
 
 	// some standard location
-	map.setCenter(new OpenLayers.LonLat(/*randInt(0, 180), randInt(0, 90)*/randFloat(-76, -78), randFloat(37, 39)).transform(fromProjection, toProjection), 14);
+	map.setCenter(getPos(/*randInt(0, 180), randInt(0, 90)*/randFloat(-76, -78), randFloat(37, 39)), 14);
 }
 
 function updatePosition() {
@@ -89,8 +89,18 @@ function placeObject() {
 	postData({action: "get_info", name: getGET("player")}, placeObjectCallback);
 }
 function placeObjectCallback(info) {
-	console.log(info);
 	postData({action: "add_event", lon: gpsPosition["long"], lat: gpsPosition["lat"], owner: info.name, faction: info.faction});
+
+	// temporarily add marker
+	var size = new OpenLayers.Size(30, 30);
+	var offset = new OpenLayers.Pixel(0, -30);
+	var icon = new OpenLayers.Icon("data/portal.png", size, offset);
+	eventLayer.addMarker(
+		new OpenLayers.Marker(
+			getPos(gpsPosition["long"], gpsPosition["lat"]), 
+			icon
+		)
+	);
 }
 
 function enableAutoPan() {

@@ -29,3 +29,7 @@ function postData(dict, fun) {
 		}
 	});
 }
+
+function getPos(lon, lat) {
+	return new OpenLayers.LonLat(lon, lat).transform(fromProjection, toProjection);
+}
