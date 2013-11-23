@@ -1,9 +1,15 @@
 from bottle import *
 import atexit
 import os.path
+import collections
+import time
+import threading
 
 import db_handler
 
+
+# variables
+connected_players = collections.defaultdict(dict)
 
 # init
 def shutdown():
@@ -48,12 +54,45 @@ def postData():
 		print "Added event"
 		return {"status": "success"}
 	elif action == "get_info":
-		res = db.get_info(data['name'])
-		res.pop('_id', None)
-		print "Retrieved info for %s" % data['name']
-		return res
+		handle_poll(data['name'])
+
+		typ = data['type']
+		if typ == 'player':
+			res = db.get_info(data['name'])
+			res.pop('_id', None)
+			return res
+		elif typ == 'other_players':
+			return {"type": "other_players", "data": connected_players}
+	elif action == "pos_update":
+		connected_players[data['name']]['position'] = data['position']
+		return {"status": "success"}
 
 	return {"status": "failure"}
 
+# handle game
+def handle_poll(name):
+	if not 'last_poll' in connected_players[name]:
+		print "Connect: %s" % name
+
+	connected_players[name]['last_poll'] = time.time()
+
+def check_player_status():
+	while True:
+		cur = time.time()
+
+		delme = []
+		for key, val in connected_players.iteritems():
+			if cur - val['last_poll'] > 10:
+				delme.append(key)
+		for name in delme:
+			print "Disconnect: %s" % name
+			connected_players.pop(name, None)
+			
+
+		time.sleep(10)
+
 if __name__ == '__main__':
+	thread = threading.Thread(target = check_player_status)
+	thread.start()
+
 	run(server='flup', bindAddress= '/home/kpj/sock')

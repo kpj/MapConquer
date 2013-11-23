@@ -10,7 +10,66 @@ function handleLocation(position) {
 	console.log("Got: " + position.coords.latitude + ":" + position.coords.longitude);
 	gpsPosition = {"lat": position.coords.latitude,"long": position.coords.longitude};
 
+	// tell server
+	postData({action: "pos_update", name: getGET("player"), position: {lon: gpsPosition["long"], lat: gpsPosition["lat"]}});
+
+	// update map
 	updatePosition();
+}
+
+function pollServer() {
+	postData({action: "get_info", type: "other_players", name: getGET("player")}, handleServerResponse)
+	setTimeout(pollServer, pollTimeout);
+}
+function handleServerResponse(res) {
+	var typ = res.type;
+	var data = res.data;
+
+	if(typ == "other_players") {
+		handleOtherPlayers(data);
+	}
+}
+
+function handleOtherPlayers(data) {
+	// update existing ones
+	for(var name in data) {
+		if(name == getGET("player"))
+			continue;
+
+		var exists = false;
+		for(var i in relativeLayer.features) {
+			if(relativeLayer.features[i].data.name == name) {
+				exists = true;
+
+				// move feature
+				var pos = getPos(data[name]["position"]["lon"], data[name]["position"]["lat"]);
+				relativeLayer.features[i].move(pos);
+			}
+		}
+		if(!exists) {
+			// create feature
+			var pos = getPos(data[name]["position"]["lon"], data[name]["position"]["lat"]);
+			relativeLayer.addFeatures([
+				new OpenLayers.Feature.Vector(
+					new OpenLayers.Geometry.Point(pos.lon, pos.lat),
+					{
+						"name": name
+					}
+				)
+			]);
+		}
+	}
+
+	// delete old ones
+	var delme = []
+	for(var i in relativeLayer.features) {
+		if(relativeLayer.features[i].data.name != null) {
+			if(!(relativeLayer.features[i].data.name in data)) {
+				delme.push(relativeLayer.features[i]);
+			}
+		}
+	}
+	relativeLayer.removeFeatures(delme);
 }
 
 function initMap() {
@@ -32,20 +91,25 @@ function initMap() {
 			"styleMap": new OpenLayers.StyleMap({
 				"default": new OpenLayers.Style({
 					pointRadius: "${getPointRadius}",
-					fillColor: '#ff0000',
-					fillOpacity: 0.0,
-					strokeColor: '#00ccff',
+					fillColor: '${getColor}',
+					fillOpacity: 0.1,
+					strokeColor: '${getColor}',
 					strokeWidth: "${getStrokeWidth}",
 					strokeOpacity: 1.0
 				}, {
 					context: {
 						getPointRadius: function(feature) {
-							return Math.max(1,viewrange / feature.layer.map.getResolution());
+							return Math.max(4, viewrange / feature.layer.map.getResolution());
 						},
 						getStrokeWidth: function(feature) {
-							return Math.max(1,(viewrange / feature.layer.map.getResolution())/5);
+							return Math.max(2, (viewrange / feature.layer.map.getResolution())/5);
+						},
+						getColor: function(feature) {
+							if(feature.data.id == "viewrange")
+								return '#00ccff';
+							return '#00ffff';
 						}
-					}  
+					}
 				})
 			})
 		}
@@ -70,23 +134,16 @@ function initMap() {
 }
 
 function updatePosition() {
-	var position = new OpenLayers.LonLat(
-		gpsPosition["long"],
-		gpsPosition["lat"]
-	).transform(fromProjection, toProjection);
+	var position = getPos(gpsPosition["long"], gpsPosition["lat"]);
 
 	// visualize own range
-	for(var i in relativeLayer.features) {
-		if(relativeLayer.features[i].data.id == "viewrange") {
-			relativeLayer.features[i].move(position);
-		}
-	}
+	relativeLayer.getFeaturesByAttribute("id", "viewrange")[0].move(position);
 
 	map.setCenter(position);
 }
 
 function placeObject() {
-	postData({action: "get_info", name: getGET("player")}, placeObjectCallback);
+	postData({action: "get_info", type: "player",name: getGET("player")}, placeObjectCallback);
 }
 function placeObjectCallback(info) {
 	postData({action: "add_event", lon: gpsPosition["long"], lat: gpsPosition["lat"], owner: info.name, faction: info.faction});
