@@ -44,10 +44,16 @@ def postData():
 			with open('data/events.txt', 'w') as file:
 				file.write('lat\tlon\ttitle\tdescription\ticon\ticonSize\ticonOffset\n')
 		with open('data/events.txt', 'a') as file:
-			file.write('%s\t%s\tNew Event\tMoop!\tdata/portal.png\t30,30\t0,-30\n\n' % (lat, lon))
+			file.write('%s\t%s\tMarker\tPlaced by %s (%s)!\tdata/portal.png\t30,30\t0,-30\n\n' % (lat, lon, data['owner'], data['faction']))
 		print "Added event"
+		return {"status": "success"}
+	elif action == "get_info":
+		res = db.get_info(data['name'])
+		res.pop('_id', None)
+		print "Retrieved info for %s" % data['name']
+		return res
 
-	return {"status": "success"}
+	return {"status": "failure"}
 
 if __name__ == '__main__':
 	run(server='flup', bindAddress= '/home/kpj/sock')

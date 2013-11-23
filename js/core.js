@@ -25,7 +25,6 @@ function initMap() {
 			"projection": map.displayProjection
 		}
 	);
-	map.addLayer(eventLayer);
 
 	// layer to hold elements relative to player
 	relativeLayer = new OpenLayers.Layer.Vector(
@@ -51,7 +50,6 @@ function initMap() {
 			})
 		}
 	);
-	map.addLayer(relativeLayer);
 
 	// vision marker
 	relativeLayer.addFeatures([
@@ -62,6 +60,10 @@ function initMap() {
 			}
 		)
 	]);
+
+	// add layers
+	map.addLayer(relativeLayer);
+	map.addLayer(eventLayer);
 
 	// some standard location
 	map.setCenter(new OpenLayers.LonLat(/*randInt(0, 180), randInt(0, 90)*/randFloat(-76, -78), randFloat(37, 39)).transform(fromProjection, toProjection), 14);
@@ -84,7 +86,11 @@ function updatePosition() {
 }
 
 function placeObject() {
-	postData({action: "add_event", lon: gpsPosition["long"], lat: gpsPosition["lat"]});
+	postData({action: "get_info", name: getGET("player")}, placeObjectCallback);
+}
+function placeObjectCallback(info) {
+	console.log(info);
+	postData({action: "add_event", lon: gpsPosition["long"], lat: gpsPosition["lat"], owner: info.name, faction: info.faction});
 }
 
 function enableAutoPan() {
