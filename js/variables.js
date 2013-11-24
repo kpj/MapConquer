@@ -13,3 +13,6 @@ var panDuration = 1000;
 var randPanDir = {x: randInt(-5, 5), y: randInt(-5, 5)};
 
 var pollTimeout = 5000;
+
+var radiusScale = 1;
+var viewrangeOpacity = 1;

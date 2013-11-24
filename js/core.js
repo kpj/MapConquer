@@ -92,22 +92,23 @@ function initMap() {
 				"default": new OpenLayers.Style({
 					pointRadius: "${getPointRadius}",
 					fillColor: '${getColor}',
-					fillOpacity: 0.1,
+					fillOpacity: 0,
 					strokeColor: '${getColor}',
 					strokeWidth: "${getStrokeWidth}",
-					strokeOpacity: 1.0
+					strokeOpacity: "${getStrokeOpacity}"
 				}, {
 					context: {
 						getPointRadius: function(feature) {
-							return Math.max(4, viewrange / feature.layer.map.getResolution());
+							return ((feature.data.id == "pulse") ? radiusScale : 1) * Math.max(4, viewrange / feature.layer.map.getResolution());
 						},
 						getStrokeWidth: function(feature) {
 							return Math.max(2, (viewrange / feature.layer.map.getResolution())/5);
 						},
 						getColor: function(feature) {
-							if(feature.data.id == "viewrange")
-								return '#00ccff';
-							return '#00ffff';
+							return (feature.data.id == "viewrange" || feature.data.id == "pulse") ? '#00ccff' : '#00ffff';
+						},
+						getStrokeOpacity: function (feature) {
+							return (feature.data.id == "pulse") ? viewrangeOpacity : 1;
 						}
 					}
 				})
@@ -122,12 +123,21 @@ function initMap() {
 			{
 				"id": "viewrange"
 			}
+		),
+		new OpenLayers.Feature.Vector(
+			new OpenLayers.Geometry.Point(0, 0),
+			{
+				"id": "pulse"
+			}
 		)
 	]);
 
 	// add layers
 	map.addLayer(relativeLayer);
 	map.addLayer(eventLayer);
+
+	// enable pulsing for viewrange
+	pulse();
 
 	// some standard location
 	map.setCenter(getPos(/*randInt(0, 180), randInt(0, 90)*/randFloat(-76, -78), randFloat(37, 39)), 14);
@@ -138,6 +148,7 @@ function updatePosition() {
 
 	// visualize own range
 	relativeLayer.getFeaturesByAttribute("id", "viewrange")[0].move(position);
+	relativeLayer.getFeaturesByAttribute("id", "pulse")[0].move(position);
 
 	map.setCenter(position);
 }
